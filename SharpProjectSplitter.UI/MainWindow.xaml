@@ -1,0 +1,184 @@
+<Window x:Class="SharpProjectSplitter.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:i="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:Controls="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions" 
+        xmlns:UI="clr-namespace:SharpProjectSplitter.UI" 
+        xmlns:GraphViz="clr-namespace:Graphviz4Net.Graphs;assembly=Graphviz4Net"
+        xmlns:WPF="clr-namespace:Graphviz4Net.WPF;assembly=Graphviz4Net.WPF" 
+        xmlns:ViewModels="clr-namespace:Graphviz4Net.WPF.ViewModels;assembly=Graphviz4Net.WPF" 
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        Title="C# Project Splitter" 
+        Height="{Binding WindowHeight, Mode=OneWayToSource}" 
+        Width="{Binding WindowWidth, Mode=OneWayToSource}">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type UI:ProjectView}">
+            <Border BorderBrush="Black" BorderThickness="1" Padding="0" CornerRadius="5" Background="White" >
+                <Border.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <Trigger Property="Border.IsMouseOver" Value="True">
+                                <Setter Property="Border.Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="2" Color="#BBBBBB" 
+		                                                    Opacity="0.3" Direction="315"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel Orientation="Horizontal"  >
+                    <StackPanel Orientation="Vertical" Margin="2">
+                        <Button DataContext="{Binding}" Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=OnProjectClicked}">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type UI:DiamondArrow}">
+            <Canvas Width="6" Height="11">
+                <Polygon Points="3,0 6,5 3,10 0,5" Stroke="Black" StrokeThickness="1" Fill="Black"/>
+            </Canvas>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type UI:Arrow}">
+            <Path Data="M 0,0 L 20,0 L 10,10 L 0,0" Stroke="Black" StrokeThickness="1">
+            </Path>
+        </DataTemplate>
+
+        <!-- Set UseContentPresenterForAllElements of GraphLayout to true -->
+        <DataTemplate DataType="{x:Type ViewModels:EdgeLabelViewModel}">
+            <StackPanel>
+                <TextBlock Text="{Binding Path=Label}" FontFamily="Comic Sans MS"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type ViewModels:BorderViewModel}">
+            <Border BorderBrush="Green"
+                    BorderThickness="2"
+                    CornerRadius="10"
+                    Padding="10, 0, 0, 0">
+                <TextBlock Text="{Binding Path=Label}" FontStyle="Italic"/>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type ViewModels:EdgeArrowLabelViewModel}">
+            <TextBlock Text="{Binding Path=Label}" Background="White"/>
+        </DataTemplate>
+
+        <Style x:Key="EdgeStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Path x:Name="EdgePath" Data="{Binding Data}" Stroke="Black" StrokeThickness="1" ToolTip="{Binding Edge.Label}"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="EdgePath" Property="Stroke" Value="#BBBBBB"/>
+                                <Setter TargetName="EdgePath" Property="StrokeThickness" Value="3"/>
+                            </Trigger>                                
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <DataTemplate DataType="{x:Type ViewModels:EdgeViewModel}">
+            <Button Style="{StaticResource EdgeStyle}" Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=OnEdgeClicked}" />
+        </DataTemplate>
+
+        <ObjectDataProvider x:Key="dataFromLayoutEngineEnum" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="GraphViz:LayoutEngine"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <DataTemplate DataType="{x:Type TreeViewItem}">
+            <TextBlock Text="{Binding Path}"/>
+        </DataTemplate>
+
+
+        <Style x:Key="FileRefStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <TreeViewItem Header="{Binding FileRef}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Button x:Name="LoadCsprojBtn" Content="Load .csproj" Click="LoadCsProj_Click" />
+        <Grid Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ScrollViewer Width="300" Grid.Column="0" >
+                    <TreeView ItemsSource="{Binding SelectedEdge}">
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type UI:EdgeView}" ItemsSource="{Binding Dependencies}">
+                                <TreeViewItem Header="{Binding DestinationName}" IsExpanded="{Binding IsExpanded}" />
+                            </HierarchicalDataTemplate>
+
+                            <HierarchicalDataTemplate DataType="{x:Type UI:FileDependencyView}" ItemsSource="{Binding Dependencies}">
+                                <TreeViewItem Header="{Binding DepFileName}" />
+                            </HierarchicalDataTemplate>
+
+                            <HierarchicalDataTemplate DataType="{x:Type UI:DependencyView}" ItemsSource="{Binding References}">
+                                <TreeViewItem Header="{Binding DependencyTypeName}" IsExpanded="{Binding IsExpanded}"/>
+                            </HierarchicalDataTemplate>
+
+                            <HierarchicalDataTemplate DataType="{x:Type UI:InnerFileRef}">
+                                <TreeViewItem Header="{Binding FileRef}" MouseLeftButtonUp="TreeViewItem_Selected"/>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
+                </ScrollViewer>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Text="Click on an Edge" Visibility="{Binding IsEdgeSelectedVisibility}"/>
+
+                <Controls:ZoomControl Grid.Column="1">
+                    <WPF:GraphLayout 
+                UseContentPresenterForAllElements="True"
+                LogGraphvizOutput="True"
+                Graph="{Binding Graph}"
+                Engine="{Binding LayoutEngine}"
+                x:Name="GraphLayout">
+                        <WPF:GraphLayout.Resources>
+                            <Style TargetType="ProgressBar">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ProgressBar">
+                                            <TextBlock Foreground="Black">Generating the layout...</TextBlock>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </WPF:GraphLayout.Resources>
+                    </WPF:GraphLayout>
+                </Controls:ZoomControl>
+                <fa:ImageAwesome x:Name="LoadingCtrl" Icon="Refresh" Spin="True" Height="48" Width="48" Grid.Column="1" />
+                <TextBlock x:Name="LoadProjCtrl" Text="Load .csproj above" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" />
+            </Grid>
+        </Grid>
+        <UI:CodeViewer x:Name="CodeViewer" Grid.Row="2" Height="300"/>
+        <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Click on a edge and expand the TreeView to find a code file dependency to open here" Visibility="{Binding CodeOpenedVisibility}"/>
+    </Grid>
+</Window>

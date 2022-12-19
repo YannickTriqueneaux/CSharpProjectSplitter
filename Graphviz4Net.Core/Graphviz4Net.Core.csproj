@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Graphviz4Net</RootNamespace>
+    <AssemblyName>Graphviz4Net</AssemblyName>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyTitle>Graphviz4Net.Core</AssemblyTitle>
+    <Company>...</Company>
+    <Product>Graphviz4Net.Core</Product>
+    <Description>Graphviz4Net Core Library</Description>
+    <Copyright>Copyright Steve Sindelar © 2011</Copyright>
+    <PackageLicenseUrl>https://github.com/frblondin/Graphviz4Net/license</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/frblondin/Graphviz4Net</PackageProjectUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Graphviz4Net.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <Target Name="BeforeBuildMigrated" BeforeTargets="PreBuildEvent">
+    <Exec Command="$(ProjectDir)..\tools\antlr-dotnet-csharp3\Antlr3.exe -o ./Dot/AntlrParser/Generated -message-format vs2005 ./Dot/AntlrParser/DotGrammar.g" />
+  </Target>
+  <ItemGroup>
+    <Compile Update="Dot\AntlrParser\DotGrammarParser.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="Dot\AntlrParser\Generated\DotGrammarLexer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Dot\AntlrParser\DotGrammar.g</DependentUpon>
+    </Compile>
+    <Compile Update="Dot\AntlrParser\Generated\DotGrammarParser.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Dot\AntlrParser\DotGrammar.g</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="DotAutomationFactoryRunner.cs" />
+    <Compile Remove="Dot\AntlrParser\output\DotGrammarLexer.cs" />
+    <Compile Remove="Dot\AntlrParser\output\DotGrammarParser.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Antlr3" Version="3.5.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Antlr3.Runtime" Version="3.5.1" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.28">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>
