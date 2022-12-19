@@ -15,11 +15,14 @@ You can visualize dependencies by clicking on edges.
 You can visualize the code depending on, by clicking on the dependency discribed in edge content.
 
 
+![image](https://user-images.githubusercontent.com/5014260/208489840-70e132d9-4932-47e7-aa14-0dc554254dcb.png)
+
+
 # How to launch it
 - Make sure to install DOT by executing the installer at the root of the depot
 - Ensure you chose to add the dot.exe in your PATHh environement variables (an option in the installer)
 - Launch Built/CSharpProjectSplitter.UI.exe
-
+- 
 
 # How to change the code and compile it
 - Try to clone the depot and compile the VisualSutdio solution.
