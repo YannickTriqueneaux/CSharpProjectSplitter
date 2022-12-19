@@ -18,7 +18,7 @@ You can visualize the code depending on, by clicking on the dependency discribed
 # How to launch it
 - Make sure to install DOT by executing the installer at the root of the depot
 - Ensure you chose to add the dot.exe in your PATHh environement variables (an option in the installer)
-- Launch bin/Release/ProjectSplitter.UI.exe
+- Launch Built/ProjectSplitter.UI.exe
 
 
 # How to change the code and compile it
