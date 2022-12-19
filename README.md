@@ -15,10 +15,11 @@ You can visualize dependencies by clicking on edges.
 You can visualize the code depending on, by clicking on the dependency discribed in edge content.
 
 
-![image](https://user-images.githubusercontent.com/5014260/208501486-2924077b-f78a-404b-a4c8-8c0185679bfd.png)
+![image](https://user-images.githubusercontent.com/5014260/208502526-48608f6c-fa0a-472a-acdc-44783832640b.png)
 
 It actually was made to support large scaled projects
-![image](https://user-images.githubusercontent.com/5014260/208502207-e776206b-87fb-45f2-bf8c-6ab1eec39ea9.png)
+![image](https://user-images.githubusercontent.com/5014260/208502380-3d6cb445-c623-4884-aba4-a58ed61ff6d8.png)
+
 
 
 # How to launch it
