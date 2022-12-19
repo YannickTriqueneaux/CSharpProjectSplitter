@@ -15,8 +15,7 @@ You can visualize dependencies by clicking on edges.
 You can visualize the code depending on, by clicking on the dependency discribed in edge content.
 
 
-![image](https://user-images.githubusercontent.com/5014260/208490541-a37b2606-68c9-4a56-9554-a7df3ccf0468.png)
-
+![image](https://user-images.githubusercontent.com/5014260/208501486-2924077b-f78a-404b-a4c8-8c0185679bfd.png)
 
 
 # How to launch it
