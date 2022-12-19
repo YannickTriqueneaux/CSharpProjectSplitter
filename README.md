@@ -17,7 +17,7 @@ You can visualize the code depending on, by clicking on the dependency discribed
 
 ![image](https://user-images.githubusercontent.com/5014260/208502526-48608f6c-fa0a-472a-acdc-44783832640b.png)
 
-It actually was made to support large scaled projects
+It actually was made to support large scaled projects with 30k files+
 ![image](https://user-images.githubusercontent.com/5014260/208502380-3d6cb445-c623-4884-aba4-a58ed61ff6d8.png)
 
 
