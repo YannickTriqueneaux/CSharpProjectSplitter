@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.Windows;
+using System.Windows.Media;
 
 namespace SharpProjectSplitter.UI
 {
@@ -26,7 +27,7 @@ namespace SharpProjectSplitter.UI
         }
 
         public Project Project { get; }
-        public string Name => Project.FolderName;
+        public string Name => string.IsNullOrEmpty(Project.FolderName) ? "<Root>" : Project.FolderName;
     }
 
     public class EdgeView : Edge<ProjectView>, INotifyPropertyChanged
@@ -46,10 +47,17 @@ namespace SharpProjectSplitter.UI
             get
             {
                 if(m_dependencies == null)
+                {
                     m_dependencies = BuildDependencies();
+                    Label = m_dependencies.Count.ToString();
+                    RaisePropertyChanged(nameof(Label));
+                };
                 return m_dependencies;
             }
         }
+
+
+        public SolidColorBrush EdgeColor => IsSelected ? UIColors.SelelectedEdge : UIColors.EdgeColor;
 
         private List<FileDependencyView> BuildDependencies()
         {
@@ -60,9 +68,21 @@ namespace SharpProjectSplitter.UI
             Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => { RaisePropertyChanged(nameof(IsExpanded)); }));
             return result.ToList();
         }
+
+        //Tried to make is already expanded by default... but it never worked ....
         public bool IsExpanded => true;
         public string DestinationName => Source.Name;
 
+        private bool m_selected = false;
+        public bool IsSelected
+        {
+            get => m_selected;
+            set
+            {
+                m_selected = value;
+                RaisePropertyChanged(nameof(EdgeColor));
+            }
+        }
 
         private void RaisePropertyChanged(string property)
         {
@@ -234,8 +254,13 @@ namespace SharpProjectSplitter.UI
 
         internal void SelectEdge(EdgeView edgeView)
         {
-            SelectedEdge.Clear();
+            if (SelectedEdge.Count > 0)
+            {
+                SelectedEdge[0].IsSelected = false;
+                SelectedEdge.Clear();
+            }
             SelectedEdge.Add(edgeView);
+            edgeView.IsSelected = true;
             RaisePropertyChanged(nameof(SelectedEdge));
             RaisePropertyChanged(nameof(IsEdgeSelectedVisibility));
         }
@@ -276,9 +301,9 @@ namespace SharpProjectSplitter.UI
 
             foreach (var proj in splittedProject.SplittedProjects)
             {
-                var projv = projects[proj.FolderName];
+                var projv = projects[string.IsNullOrEmpty(proj.FolderName) ? "<Root>" : proj.FolderName];
                 foreach (var dep in proj.Dependencies)
-                    graph.AddEdge(new EdgeView(projv, projects[dep.FolderName], new Arrow()));
+                    graph.AddEdge(new EdgeView(projv, projects[string.IsNullOrEmpty(dep.FolderName) ? "<Root>" : dep.FolderName], new Arrow()));
             }
 
             this.Graph = graph;

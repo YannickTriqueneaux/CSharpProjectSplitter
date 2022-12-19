@@ -52,7 +52,12 @@ namespace SharpProjectSplitter
         {
             var elements = XElement.Load(csprojFile).DescendantNodes().OfType<XElement>().ToArray();
             var compileElements = elements.Where(e => e.Name.LocalName == "Compile").ToArray();
-            var paths = compileElements.Select(e => e.Attribute("Include").Value);
+            var paths = compileElements.Where(e => e.Attribute("Include") != null).Select(e => e.Attribute("Include").Value).ToArray();
+            if (paths.Length == 0)
+            {
+                var csprojDir = System.IO.Path.GetDirectoryName(csprojFile);
+                paths = Directory.EnumerateFiles(csprojDir, "*.cs", SearchOption.AllDirectories).Select(f => f.Replace(csprojDir + "\\", "")).ToArray();
+            }
             return paths.Where(f => f.EndsWith(".cs"));
         }
 

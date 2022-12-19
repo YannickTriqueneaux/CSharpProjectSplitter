@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graphviz4Net.Core", "Graphv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Graphviz4Net.WPF", "Graphviz4Net.WPF\Graphviz4Net.WPF.csproj", "{4C3D0E16-9DC6-43D0-AC19-86E622C18530}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleProject", "SampleProject\SampleProject.csproj", "{BDEBE1AF-04DB-489B-8277-AC48B48A011D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{4C3D0E16-9DC6-43D0-AC19-86E622C18530}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C3D0E16-9DC6-43D0-AC19-86E622C18530}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C3D0E16-9DC6-43D0-AC19-86E622C18530}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDEBE1AF-04DB-489B-8277-AC48B48A011D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDEBE1AF-04DB-489B-8277-AC48B48A011D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDEBE1AF-04DB-489B-8277-AC48B48A011D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDEBE1AF-04DB-489B-8277-AC48B48A011D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

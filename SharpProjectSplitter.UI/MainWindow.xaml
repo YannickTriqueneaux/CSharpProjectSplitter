@@ -73,15 +73,15 @@
         <DataTemplate DataType="{x:Type ViewModels:EdgeArrowLabelViewModel}">
             <TextBlock Text="{Binding Path=Label}" Background="White"/>
         </DataTemplate>
-
+        
         <Style x:Key="EdgeStyle" TargetType="{x:Type Button}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
-                        <Path x:Name="EdgePath" Data="{Binding Data}" Stroke="Black" StrokeThickness="1" ToolTip="{Binding Edge.Label}"/>
+                        <Path x:Name="EdgePath" Data="{Binding Data}" Stroke="{Binding Edge.EdgeColor}" StrokeThickness="1" ToolTip="{Binding Edge.Label}"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="EdgePath" Property="Stroke" Value="#BBBBBB"/>
+                                <Setter TargetName="EdgePath" Property="Stroke" Value="Blue"/>
                                 <Setter TargetName="EdgePath" Property="StrokeThickness" Value="3"/>
                             </Trigger>                                
                         </ControlTemplate.Triggers>
