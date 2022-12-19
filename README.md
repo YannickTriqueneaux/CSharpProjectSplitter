@@ -22,7 +22,8 @@ You can visualize the code depending on, by clicking on the dependency discribed
 
 
 # How to change the code and compile it
-- Try to clone the depot and compile the VisualSutdio solution
+- Try to clone the depot and compile the VisualSutdio solution.
+
 I Sincerly didn´t try to make it easy for you to modify it. I don´t really care of this project and the way it is setup with Graphiz dependency.
 Take it, brake it, modify it, sell it. I don´t really care, that´s why this depot has no particular license.
 The code is ugly and WPF developers might vomit the way it is implemented.
