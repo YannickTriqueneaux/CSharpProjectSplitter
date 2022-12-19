@@ -17,6 +17,9 @@ You can visualize the code depending on, by clicking on the dependency discribed
 
 ![image](https://user-images.githubusercontent.com/5014260/208501486-2924077b-f78a-404b-a4c8-8c0185679bfd.png)
 
+It actually was made to support large scaled projects
+![image](https://user-images.githubusercontent.com/5014260/208502207-e776206b-87fb-45f2-bf8c-6ab1eec39ea9.png)
+
 
 # How to launch it
 - Make sure to install DOT by executing the installer at the root of the depot
