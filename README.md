@@ -1,5 +1,5 @@
 # C# Project Splitter
-This is project to display C# projects into a DOT graph
+This is a project to display C# projects into a DOT graph (.csproj)
 
 The tool displays the project´s folders like they were splitted in different projects.
 The idea is to help identify the folders dependencies and figure a way to split your project into multiples.
