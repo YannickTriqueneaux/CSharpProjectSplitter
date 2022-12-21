@@ -1,4 +1,4 @@
-# CSharp Project Splitter
+# C# Project Splitter
 This is project to display C# projects into a DOT graph
 
 The tool displays the project´s folders like they were splitted in different projects.
