@@ -4,7 +4,7 @@ This is a project to display C# projects into a DOT graph (.csproj)
 The tool displays the project´s folders like they were splitted in different projects.
 The idea is to help identify the folders dependencies and figure a way to split your project into multiples.
 
-It uses Rolsyn Compiler API to read you project´s files and detect depencencies inside this project.
+It uses Rolsyn Compiler API to read you project´s files and detect depencencies between them.
 
 After that a graph will be displayed to show you the depenencies between folders.
 
@@ -24,9 +24,8 @@ It actually was made to support large scaled projects with 30k files+
 
 # How to launch it
 - Make sure to install DOT by executing the installer at the root of the depot
-- Ensure you chose to add the dot.exe in your PATHh environement variables (an option in the installer)
+- Ensure you chose to add the dot.exe in your PATH environement variables (an option in the installer)
 - Launch Built/CSharpProjectSplitter.UI.exe
-- 
 
 # How to change the code and compile it
 - Try to clone the depot and compile the VisualSutdio solution.
