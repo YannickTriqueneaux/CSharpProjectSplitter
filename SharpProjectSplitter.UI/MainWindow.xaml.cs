@@ -23,18 +23,30 @@ namespace SharpProjectSplitter.UI
             LoadingCtrl.Visibility = Visibility.Hidden;
         }
 
-        private  async void LoadCsProj_Click(object sender, RoutedEventArgs e)
+        private async void LoadCsProj_Click(object sender, RoutedEventArgs e)
         {
+            Load(true);
+        }
 
+        private async void LoadFolderContent_Click(object sender, RoutedEventArgs e)
+        {
+            Load(false);
+        }
+
+        private async void Load(bool csprojOrFolder)
+        {
             LoadProjCtrl.Visibility = Visibility.Collapsed;
             LoadCsprojBtn.Visibility = Visibility.Collapsed;
-            var task = this.viewModel.LoadCsProj();
+            LoadFolderBtn.Visibility = Visibility.Collapsed;
+            var task = csprojOrFolder ? this.viewModel.LoadCsProj() : this.viewModel.LoadFolder();
             WithLoadingCtrl(task);
-            if(!await task){
+            bool loaded = await task;
 
+            if(!loaded)
                 LoadProjCtrl.Visibility = Visibility.Visible;
-                LoadCsprojBtn.Visibility = Visibility.Visible;
-            }
+            LoadCsprojBtn.Visibility = Visibility.Visible;
+            LoadFolderBtn.Visibility = Visibility.Visible;
+            
         }
 
 

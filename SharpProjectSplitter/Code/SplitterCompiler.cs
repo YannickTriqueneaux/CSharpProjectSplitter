@@ -69,22 +69,28 @@ namespace SharpProjectSplitter
             return defines;
         }
 
-        public static List<FileDependencies> AnalyzeAllFiles(string csprojPath)
+        public static List<FileDependencies> AnalyzeAllFiles(string csprojFileOrFolder)
         {
+            bool isCsProj = csprojFileOrFolder.EndsWith(".csproj");
+            string csprojPath = csprojFileOrFolder;
             List<FileDependencies> fileRefs = new List<FileDependencies>();
             List<SyntaxTree> syntaxTrees = new List<SyntaxTree>();
 
-            string workdingDir = System.IO.Path.GetDirectoryName(csprojPath);
+            string workdingDir = System.IO.Path.GetDirectoryName(csprojFileOrFolder);
             var syntaxTreeOptions = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8);
-            syntaxTreeOptions.WithPreprocessorSymbols(GetDefinesFromCsproj(csprojPath));
-            Parallel.ForEach(GetFilesFromCsproj(csprojPath), (string file) =>
-           {
+
+            if(isCsProj)
+                syntaxTreeOptions.WithPreprocessorSymbols(GetDefinesFromCsproj(csprojPath));
+
+            Parallel.ForEach(isCsProj ? GetFilesFromCsproj(csprojPath) : 
+                Directory.EnumerateFiles(csprojFileOrFolder, "*.cs", SearchOption.AllDirectories).Select(f => f.Replace(workdingDir + "\\", "")), 
+                (string file) =>
+            {
                var source = File.ReadAllText(System.IO.Path.Combine(workdingDir, file));
                var parsedSyntaxTree = Parse(source, file, syntaxTreeOptions);
                lock (syntaxTrees)
                    syntaxTrees.Add(parsedSyntaxTree);
-           });
-
+            });
 
             var compilation
                 = CSharpCompilation.Create("Test.dll", syntaxTrees.ToArray(), DefaultReferences, DefaultCompilationOptions);

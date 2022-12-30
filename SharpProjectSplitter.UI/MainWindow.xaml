@@ -124,7 +124,14 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Button x:Name="LoadCsprojBtn" Content="Load .csproj" Click="LoadCsProj_Click" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="LoadCsprojBtn" Content="Load .csproj" Click="LoadCsProj_Click" />
+            <Button Grid.Column="1" x:Name="LoadFolderBtn" Content="Load Folder Content" Click="LoadFolderContent_Click" />
+        </Grid>
         <Grid Grid.Row="1">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -175,7 +182,7 @@
                     </WPF:GraphLayout>
                 </Controls:ZoomControl>
                 <fa:ImageAwesome x:Name="LoadingCtrl" Icon="Refresh" Spin="True" Height="48" Width="48" Grid.Column="1" />
-                <TextBlock x:Name="LoadProjCtrl" Text="Load .csproj above" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" />
+                <TextBlock x:Name="LoadProjCtrl" Text="Load .csproj or Folder above" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" />
             </Grid>
         </Grid>
         <UI:CodeViewer x:Name="CodeViewer" Grid.Row="2" Height="300"/>

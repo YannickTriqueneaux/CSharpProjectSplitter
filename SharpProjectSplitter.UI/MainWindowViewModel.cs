@@ -8,12 +8,12 @@ using Graphviz4Net.Graphs;
 using Graphviz4Net.Dot;
 using Graphviz4Net.Dot.AntlrParser;
 using System.ComponentModel;
-using Microsoft.Win32;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Forms;
 
 namespace SharpProjectSplitter.UI
 {
@@ -236,7 +236,9 @@ namespace SharpProjectSplitter.UI
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "csproj files (*.csproj)|*.csproj|All files (*.*)|*.*";
             openFileDialog.FileName = m_lastCsProjFileSelected;
-            if(openFileDialog.ShowDialog() == true)
+
+            var dialogResult = openFileDialog.ShowDialog();
+            if (dialogResult == DialogResult.OK && !string.IsNullOrEmpty(openFileDialog.FileName))
             {
                 m_lastCsProjFileSelected = openFileDialog.FileName;
                 await Task.Run(async () =>
@@ -244,6 +246,27 @@ namespace SharpProjectSplitter.UI
                     await SplitProject(m_lastCsProjFileSelected);
                 });
                 return true;
+            }
+            return false;
+        }
+
+        string m_lastFolderSelected = null;
+        internal async Task<bool> LoadFolder()
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                fbd.SelectedPath = m_lastFolderSelected;
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    m_lastFolderSelected = fbd.SelectedPath;
+                    await Task.Run(async () =>
+                    {
+                        await SplitProject(m_lastFolderSelected);
+                    });
+                    return true;
+                }
             }
             return false;
         }
@@ -269,10 +292,10 @@ namespace SharpProjectSplitter.UI
         private List<FileDependencies> m_files;
 
 
-        internal Task SplitProject(string csprojFile)
+        internal Task SplitProject(string csprojFileOrFolder)
         {
             m_manuallySplittedFolders = new List<string>();
-            m_files = SplitterCompiler.AnalyzeAllFiles(csprojFile);
+            m_files = SplitterCompiler.AnalyzeAllFiles(csprojFileOrFolder);
             return SplitProject();
         }
 
@@ -317,5 +340,6 @@ namespace SharpProjectSplitter.UI
             CodeViewer.SetText(fileRef.Node.SyntaxTree, fileRef.Semantic, fileRef.Node);
             RaisePropertyChanged(nameof(CodeOpenedVisibility));
         }
+
     }
 }
