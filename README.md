@@ -9,13 +9,14 @@ It uses Rolsyn Compiler API to read you project´s files and detect depencencies
 After that a graph will be displayed to show you the depenencies between folders.
 
 If you want to split a folder into multiple folders, simply click on it, and the graph will be updated.
+If you want to analyze and split only one these folders Folder into multiple and ignore all others, right click on it.
 
 You can visualize dependencies by clicking on edges.
 
 You can visualize the code depending on, by clicking on the dependency discribed in edge content.
 
 
-![image](https://user-images.githubusercontent.com/5014260/208502526-48608f6c-fa0a-472a-acdc-44783832640b.png)
+![image](https://user-images.githubusercontent.com/5014260/210430410-1afdd680-8da1-4a21-b4d9-a78bdba6ba3b.png)
 
 It actually was made to support large scaled projects with 30k files+
 ![image](https://user-images.githubusercontent.com/5014260/208502380-3d6cb445-c623-4884-aba4-a58ed61ff6d8.png)
