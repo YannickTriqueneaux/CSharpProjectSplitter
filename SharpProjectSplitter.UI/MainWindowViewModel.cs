@@ -156,7 +156,7 @@ namespace SharpProjectSplitter.UI
             return result;
         }
         public bool IsExpanded => true;
-        public string DependencyTypeName => Group.Key;
+        public string DependencyTypeName => $"{Group.Key} ({Group.First().Item2.DeclaringSyntaxReferences.First().SyntaxTree.FilePath})";
 
 
         private void RaisePropertyChanged(string property)
@@ -291,12 +291,16 @@ namespace SharpProjectSplitter.UI
         private List<string> m_manuallySplittedFolders = new List<string>();
         private List<FileDependencies> m_files;
 
-
+        private string loadedCsProjOrFolder = null;
         internal Task SplitProject(string csprojFileOrFolder)
         {
+            loadedCsProjOrFolder = csprojFileOrFolder;
             m_manuallySplittedFolders = new List<string>();
-            m_files = SplitterCompiler.AnalyzeAllFiles(csprojFileOrFolder);
-            return SplitProject();
+            return Task.Run(async () =>
+            {
+                m_files = SplitterCompiler.AnalyzeAllFiles(csprojFileOrFolder);
+                await SplitProject();
+            });
         }
 
         internal async Task SplitProject(ProjectView projectView)
@@ -304,6 +308,16 @@ namespace SharpProjectSplitter.UI
             m_manuallySplittedFolders.Add(projectView.Name);
             await Task.Run(async () =>
             {
+                await SplitProject();
+            });
+        }
+
+        internal Task ReloadOnlyOneProject(ProjectView projectView)
+        {
+            m_manuallySplittedFolders = new List<string>();
+            return Task.Run(async () =>
+            {
+                m_files = SplitterCompiler.AnalyzeAllFiles(loadedCsProjOrFolder, projectView.Project.FolderName);
                 await SplitProject();
             });
         }
@@ -340,6 +354,5 @@ namespace SharpProjectSplitter.UI
             CodeViewer.SetText(fileRef.Node.SyntaxTree, fileRef.Semantic, fileRef.Node);
             RaisePropertyChanged(nameof(CodeOpenedVisibility));
         }
-
     }
 }

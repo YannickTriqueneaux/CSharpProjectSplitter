@@ -31,12 +31,15 @@
                 </Border.Style>
                 <StackPanel Orientation="Horizontal"  >
                     <StackPanel Orientation="Vertical" Margin="2">
-                        <Button DataContext="{Binding}" Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=OnProjectClicked}">
+                        <Button DataContext="{Binding}" Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=OnProjectClicked}" CommandParameter="{Binding}">
                             <Button.Template>
                                 <ControlTemplate>
                                     <TextBlock Text="{Binding Name}"/>
                                 </ControlTemplate>
                             </Button.Template>
+                            <Button.InputBindings>
+                                <MouseBinding Gesture="RightClick" Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=OnProjectRightClicked}" CommandParameter="{Binding}" />
+                            </Button.InputBindings>
                         </Button>
                     </StackPanel>
                 </StackPanel>
@@ -91,7 +94,7 @@
         </Style>
         
         <DataTemplate DataType="{x:Type ViewModels:EdgeViewModel}">
-            <Button Style="{StaticResource EdgeStyle}" Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=OnEdgeClicked}" />
+            <Button Style="{StaticResource EdgeStyle}" Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=OnEdgeClicked}" CommandParameter="{Binding}" />
         </DataTemplate>
 
         <ObjectDataProvider x:Key="dataFromLayoutEngineEnum" MethodName="GetValues"
@@ -123,6 +126,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -136,9 +140,10 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <ScrollViewer Width="300" Grid.Column="0" >
+                <ScrollViewer MinWidth="300" Margin="0,0,3,0" Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <TreeView ItemsSource="{Binding SelectedEdge}">
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type UI:EdgeView}" ItemsSource="{Binding Dependencies}">
@@ -160,8 +165,8 @@
                     </TreeView>
                 </ScrollViewer>
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="0" Text="Click on an Edge" Visibility="{Binding IsEdgeSelectedVisibility}"/>
-
-                <Controls:ZoomControl Grid.Column="1">
+                <GridSplitter  Width="3" Background="Gray" />
+                <Controls:ZoomControl Grid.Column="2">
                     <WPF:GraphLayout 
                 UseContentPresenterForAllElements="True"
                 LogGraphvizOutput="True"
@@ -181,11 +186,18 @@
                         </WPF:GraphLayout.Resources>
                     </WPF:GraphLayout>
                 </Controls:ZoomControl>
-                <fa:ImageAwesome x:Name="LoadingCtrl" Icon="Refresh" Spin="True" Height="48" Width="48" Grid.Column="1" />
-                <TextBlock x:Name="LoadProjCtrl" Text="Load .csproj or Folder above" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" />
+
+                <StackPanel Orientation="Vertical" Grid.Column="2" VerticalAlignment="Bottom" Margin="5,0,0,5">
+                    <TextBlock Text="Left  Click: Sub Split Folder"/>
+                    <TextBlock Text="Right Click: Reload only this Folder"/>
+                </StackPanel>
+                
+                <fa:ImageAwesome x:Name="LoadingCtrl" Icon="Refresh" Spin="True" Height="48" Width="48" Grid.Column="2" />
+                <TextBlock x:Name="LoadProjCtrl" Text="Load .csproj or Folder above" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" />
             </Grid>
         </Grid>
-        <UI:CodeViewer x:Name="CodeViewer" Grid.Row="2" Height="300"/>
-        <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Click on a edge and expand the TreeView to find a code file dependency to open here" Visibility="{Binding CodeOpenedVisibility}"/>
+        <GridSplitter Height="3" Background="Gray" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch"/>
+        <UI:CodeViewer x:Name="CodeViewer" Grid.Row="5" MinHeight="300"/>
+        <TextBlock Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Click on a edge and expand the TreeView to find a code file dependency to open here" Visibility="{Binding CodeOpenedVisibility}"/>
     </Grid>
 </Window>

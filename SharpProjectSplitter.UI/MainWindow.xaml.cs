@@ -35,59 +35,54 @@ namespace SharpProjectSplitter.UI
 
         private async void Load(bool csprojOrFolder)
         {
-            LoadProjCtrl.Visibility = Visibility.Collapsed;
-            LoadCsprojBtn.Visibility = Visibility.Collapsed;
-            LoadFolderBtn.Visibility = Visibility.Collapsed;
             var task = csprojOrFolder ? this.viewModel.LoadCsProj() : this.viewModel.LoadFolder();
             WithLoadingCtrl(task);
             bool loaded = await task;
-
-            if(!loaded)
+            if (!loaded)
                 LoadProjCtrl.Visibility = Visibility.Visible;
-            LoadCsprojBtn.Visibility = Visibility.Visible;
-            LoadFolderBtn.Visibility = Visibility.Visible;
-            
         }
 
 
         public ICommand OnProjectClicked
         {
-            get { return new OnClickedCommandImpl(this); }
+            get { return new OnClickedCommandImpl(this, false); }
+        }
+
+        public ICommand OnProjectRightClicked
+        {
+            get { return new OnClickedCommandImpl(this, isRightClick: true); }
         }
 
         public ICommand OnEdgeClicked
         {
-            get { return new OnClickedCommandImpl(this); }
+            get { return new OnClickedCommandImpl(this, false); }
         }
-
-        public ICommand OnFileRefClicked => new OnClickedCommandImpl(this);
-
 
         public class OnClickedCommandImpl : ICommand
         {
             private MainWindow m_window;
-            private static PropertyInfo GetSubProp = typeof(System.Windows.Input.CanExecuteChangedEventManager).GetNestedType("HandlerSink", BindingFlags.NonPublic)?.GetProperty("Handler");
-            public OnClickedCommandImpl(MainWindow window)
+
+            public bool IsRightClick { get; }
+
+            public OnClickedCommandImpl(MainWindow window, bool isRightClick)
             {
                 this.m_window = window;
+                IsRightClick = isRightClick;
             }
 
             public void Execute(object parameter)
             {
-                var target = (GetSubProp.GetValue(CanExecuteChanged.Target) as EventHandler<EventArgs>)?.Target;
-                if(target is Button button)
+                switch (parameter)
                 {
-                    switch(button.DataContext)
-                    {
-                        case ProjectView projectView:
-                            m_window.WithLoadingCtrl( m_window.viewModel.SplitProject(projectView)); break;
-                        case EdgeViewModel edgeView:
-                            m_window.viewModel.SelectEdge(edgeView.Edge as EdgeView); break;
-                        case InnerFileRef fileRef:
-                            m_window.viewModel.ViewFileRefCode(fileRef); break;
-                    }
+                    case ProjectView projectView:
+                        m_window.WithLoadingCtrl(IsRightClick ?
+                            m_window.viewModel.ReloadOnlyOneProject(projectView) :
+                            m_window.viewModel.SplitProject(projectView)
+                            );
+                        break;
+                    case EdgeViewModel edgeView:
+                        m_window.viewModel.SelectEdge(edgeView.Edge as EdgeView); break;
                 }
-
             }
 
             public bool CanExecute(object parameter)
@@ -100,15 +95,20 @@ namespace SharpProjectSplitter.UI
 
         private void TreeViewItem_Selected(object sender, RoutedEventArgs e)
         {
-            viewModel.ViewFileRefCode((sender as TreeViewItem).DataContext as InnerFileRef); 
+            viewModel.ViewFileRefCode((sender as TreeViewItem).DataContext as InnerFileRef);
         }
 
 
         public async void WithLoadingCtrl(Task task)
         {
+            LoadProjCtrl.Visibility = Visibility.Collapsed;
+            LoadCsprojBtn.Visibility = Visibility.Collapsed;
+            LoadFolderBtn.Visibility = Visibility.Collapsed;
             LoadingCtrl.Visibility = Visibility.Visible;
             await task;
             LoadingCtrl.Visibility = Visibility.Collapsed;
+            LoadCsprojBtn.Visibility = Visibility.Visible;
+            LoadFolderBtn.Visibility = Visibility.Visible;
         }
     }
 }

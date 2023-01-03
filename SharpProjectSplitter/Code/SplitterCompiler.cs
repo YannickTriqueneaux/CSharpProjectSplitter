@@ -69,7 +69,7 @@ namespace SharpProjectSplitter
             return defines;
         }
 
-        public static List<FileDependencies> AnalyzeAllFiles(string csprojFileOrFolder)
+        public static List<FileDependencies> AnalyzeAllFiles(string csprojFileOrFolder, string onlyFilesStartingWith = null)
         {
             bool isCsProj = csprojFileOrFolder.EndsWith(".csproj");
             string csprojPath = csprojFileOrFolder;
@@ -83,11 +83,21 @@ namespace SharpProjectSplitter
                 syntaxTreeOptions.WithPreprocessorSymbols(GetDefinesFromCsproj(csprojPath));
 
             Parallel.ForEach(isCsProj ? GetFilesFromCsproj(csprojPath) : 
-                Directory.EnumerateFiles(csprojFileOrFolder, "*.cs", SearchOption.AllDirectories).Select(f => f.Replace(workdingDir + "\\", "")), 
+                Directory.EnumerateFiles(csprojFileOrFolder, "*.cs", SearchOption.AllDirectories), 
                 (string file) =>
             {
+                file = file.Replace(workdingDir + "\\", "");
+
+                string syntaxTreeFilePath = file;
+                if (!string.IsNullOrEmpty(onlyFilesStartingWith))
+                {
+                    if (!file.StartsWith(onlyFilesStartingWith))
+                        return;
+                    syntaxTreeFilePath = System.IO.Path.Combine(System.IO.Path.GetFileName(onlyFilesStartingWith), file.Replace(onlyFilesStartingWith + "\\", ""));
+                }
+
                var source = File.ReadAllText(System.IO.Path.Combine(workdingDir, file));
-               var parsedSyntaxTree = Parse(source, file, syntaxTreeOptions);
+               var parsedSyntaxTree = Parse(source, syntaxTreeFilePath, syntaxTreeOptions);
                lock (syntaxTrees)
                    syntaxTrees.Add(parsedSyntaxTree);
             });
