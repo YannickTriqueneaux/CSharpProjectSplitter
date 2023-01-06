@@ -9,9 +9,7 @@
         xmlns:ViewModels="clr-namespace:Graphviz4Net.WPF.ViewModels;assembly=Graphviz4Net.WPF" 
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
-        Title="C# Project Splitter" 
-        Height="{Binding WindowHeight, Mode=OneWayToSource}" 
-        Width="{Binding WindowWidth, Mode=OneWayToSource}">
+        Title="C# Project Splitter" Width="1425" Height="825">
     <Window.Resources>
         <DataTemplate DataType="{x:Type UI:ProjectView}">
             <Border BorderBrush="Black" BorderThickness="1" Padding="0" CornerRadius="5" Background="White" >
@@ -34,7 +32,7 @@
                         <Button DataContext="{Binding}" Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=OnProjectClicked}" CommandParameter="{Binding}">
                             <Button.Template>
                                 <ControlTemplate>
-                                    <TextBlock Text="{Binding Name}"/>
+                                    <TextBlock Text="{Binding DisplayName}"/>
                                 </ControlTemplate>
                             </Button.Template>
                             <Button.InputBindings>
@@ -118,7 +116,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+        <Style TargetType="TreeViewItem">
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded}"/>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -147,7 +147,7 @@
                     <TreeView ItemsSource="{Binding SelectedEdge}">
                         <TreeView.Resources>
                             <HierarchicalDataTemplate DataType="{x:Type UI:EdgeView}" ItemsSource="{Binding Dependencies}">
-                                <TreeViewItem Header="{Binding DestinationName}" IsExpanded="{Binding IsExpanded}" />
+                                <TreeViewItem Header="{Binding DestinationName}" />
                             </HierarchicalDataTemplate>
 
                             <HierarchicalDataTemplate DataType="{x:Type UI:FileDependencyView}" ItemsSource="{Binding Dependencies}">
@@ -155,7 +155,7 @@
                             </HierarchicalDataTemplate>
 
                             <HierarchicalDataTemplate DataType="{x:Type UI:DependencyView}" ItemsSource="{Binding References}">
-                                <TreeViewItem Header="{Binding DependencyTypeName}" IsExpanded="{Binding IsExpanded}"/>
+                                <TreeViewItem Header="{Binding DependencyTypeName}" />
                             </HierarchicalDataTemplate>
 
                             <HierarchicalDataTemplate DataType="{x:Type UI:InnerFileRef}">
@@ -187,10 +187,32 @@
                     </WPF:GraphLayout>
                 </Controls:ZoomControl>
 
-                <StackPanel Orientation="Vertical" Grid.Column="2" VerticalAlignment="Bottom" Margin="5,0,0,5">
-                    <TextBlock Text="Left  Click: Sub Split Folder"/>
-                    <TextBlock Text="Right Click: Reload only this Folder"/>
-                </StackPanel>
+                <Grid Margin="5" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+
+                    <Border Background="#55999999" BorderBrush="Black" BorderThickness="1">
+                        <Grid    Margin="3">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Left  Click: Sub Split Folder"/>
+                            <TextBlock Grid.Row="1" Text="Right Click: Reload and Split only this Folder"/>
+                            <Grid Grid.Row="2" HorizontalAlignment="Left">
+                                <Border BorderBrush="Black" BorderThickness="1" Padding="0" CornerRadius="5" Background="White" >
+                                    <Button>
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <TextBlock Margin="3" Text=" FolderName (FileCount) -> [DependencyCount]"/>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
                 
                 <fa:ImageAwesome x:Name="LoadingCtrl" Icon="Refresh" Spin="True" Height="48" Width="48" Grid.Column="2" />
                 <TextBlock x:Name="LoadProjCtrl" Text="Load .csproj or Folder above" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" />
@@ -198,6 +220,6 @@
         </Grid>
         <GridSplitter Height="3" Background="Gray" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch"/>
         <UI:CodeViewer x:Name="CodeViewer" Grid.Row="5" MinHeight="300"/>
-        <TextBlock Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Click on a edge and expand the TreeView to find a code file dependency to open here" Visibility="{Binding CodeOpenedVisibility}"/>
+        <TextBlock Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Click on an edge and expand the TreeView to find a code file dependency to open here" Visibility="{Binding CodeOpenedVisibility}"/>
     </Grid>
 </Window>

@@ -9,7 +9,7 @@ namespace SharpProjectSplitter
         public Project(string folderName, FileDependencies[] files)
         {
             FolderName = folderName;
-            Files = files;
+            Files = files.Distinct().ToArray();
         }
 
         public string FolderName { get; }
@@ -35,7 +35,7 @@ namespace SharpProjectSplitter
 
         internal void MergeChild(Project child)
         {
-            Files = Files.Concat(child.Files).ToArray();
+            Files = Files.Concat(child.Files).Distinct().ToArray();
         }
 
         internal int GetParentDept()

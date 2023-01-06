@@ -100,7 +100,7 @@ namespace SharpProjectSplitter.UI
         SolidColorBrush m_gray = new SolidColorBrush(Color.FromArgb(255, 160, 160, 160));
         SolidColorBrush m_identifiers = new SolidColorBrush(Color.FromArgb(255, 35, 111, 141));
         SolidColorBrush m_keyWord = new SolidColorBrush(Color.FromArgb(255, 3, 3, 253));
-        SolidColorBrush m_textColor = new SolidColorBrush(Color.FromArgb(255, 27, 139, 117));
+        SolidColorBrush m_textColor = new SolidColorBrush(Color.FromArgb(255, 67, 7, 128));
 
         private void RaisePropertyChanged(string property)
         {

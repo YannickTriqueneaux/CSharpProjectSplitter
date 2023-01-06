@@ -28,6 +28,7 @@ namespace SharpProjectSplitter.UI
 
         public Project Project { get; }
         public string Name => string.IsNullOrEmpty(Project.FolderName) ? "<Root>" : Project.FolderName;
+        public string DisplayName => $"{Name} ({Project.Files.Length}) -> [{Project.Dependencies.Length}]";
     }
 
     public class EdgeView : Edge<ProjectView>, INotifyPropertyChanged
@@ -47,29 +48,29 @@ namespace SharpProjectSplitter.UI
             get
             {
                 if(m_dependencies == null)
-                {
                     m_dependencies = BuildDependencies();
-                    Label = m_dependencies.Count.ToString();
-                    RaisePropertyChanged(nameof(Label));
-                };
                 return m_dependencies;
             }
         }
 
 
+        public EdgeView WithLabel()
+        {
+            Label = Dependencies.Count.ToString();
+            return this;
+        }
+
         public SolidColorBrush EdgeColor => IsSelected ? UIColors.SelelectedEdge : UIColors.EdgeColor;
 
         private List<FileDependencyView> BuildDependencies()
         {
-            IEnumerable<FileDependencyView> result = Enumerable.Empty<FileDependencyView>();
+            List<FileDependencyView> result = new List<FileDependencyView>();
             foreach (var file in Source.Project.Files)
-                result = result.Concat(file.Dependencies.Where(d => d.AssignedProject == Destination.Project).Select(dep => new FileDependencyView(file, dep)));
+                result.AddRange(file.Dependencies.Where(d => d.AssignedProject == Destination.Project).Select(dep => new FileDependencyView(file, dep)));
             
-            Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => { RaisePropertyChanged(nameof(IsExpanded)); }));
-            return result.ToList();
+            return result;
         }
 
-        //Tried to make is already expanded by default... but it never worked ....
         public bool IsExpanded => true;
         public string DestinationName => Source.Name;
 
@@ -122,6 +123,9 @@ namespace SharpProjectSplitter.UI
         }
         
         public string DepFileName => File.FileName;
+
+
+        public bool IsExpanded => false;
     }
 
     public class DependencyView: INotifyPropertyChanged
@@ -185,6 +189,7 @@ namespace SharpProjectSplitter.UI
         public Microsoft.CodeAnalysis.Text.TextSpan Span => Node.Span;
         public string FilePath => Node.SyntaxTree.FilePath;
         public string FileRef => $"{Type.Name} ({LineNumber})";
+        public bool IsExpanded => false;
     }
 
     public class DiamondArrow
@@ -340,7 +345,7 @@ namespace SharpProjectSplitter.UI
             {
                 var projv = projects[string.IsNullOrEmpty(proj.FolderName) ? "<Root>" : proj.FolderName];
                 foreach (var dep in proj.Dependencies)
-                    graph.AddEdge(new EdgeView(projv, projects[string.IsNullOrEmpty(dep.FolderName) ? "<Root>" : dep.FolderName], new Arrow()));
+                    graph.AddEdge(new EdgeView(projv, projects[string.IsNullOrEmpty(dep.FolderName) ? "<Root>" : dep.FolderName], new Arrow()).WithLabel());
             }
 
             this.Graph = graph;
