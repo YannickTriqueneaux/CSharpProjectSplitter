@@ -16,7 +16,7 @@ You can visualize dependencies by clicking on edges.
 You can visualize the code depending on, by clicking on the dependency discribed in edge content.
 
 
-![image](https://user-images.githubusercontent.com/5014260/210430410-1afdd680-8da1-4a21-b4d9-a78bdba6ba3b.png)
+![image](https://user-images.githubusercontent.com/5014260/211042062-82ab156b-11c7-4696-a332-fed2f99a0df2.png)
 
 It actually was made to support large scaled projects with 30k files+
 ![image](https://user-images.githubusercontent.com/5014260/208502380-3d6cb445-c623-4884-aba4-a58ed61ff6d8.png)
